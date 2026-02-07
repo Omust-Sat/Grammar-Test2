@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprehensive 50-Question Grammar Test</title>
+    <title>Grammar Test with Explanations</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; line-height: 1.6; }
         .quiz-container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; }
-        .q-block { margin-bottom: 30px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; transition: 0.3s; }
-        .q-block:hover { border-color: #1a73e8; background: #f8fbff; }
+        .q-block { margin-bottom: 30px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; transition: 0.3s; position: relative; }
         .q-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; display: block; color: #333; }
         .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         label { background: #fff; padding: 12px; border-radius: 8px; cursor: pointer; border: 1px solid #ccc; display: flex; align-items: center; }
-        label:hover { background: #e8f0fe; }
         input[type="radio"] { margin-right: 12px; transform: scale(1.2); }
-        #submit-btn { display: block; width: 100%; padding: 20px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        #submit-btn:hover { background: #1557b0; }
-        #result-box { margin-top: 30px; padding: 20px; border-radius: 10px; font-size: 24px; text-align: center; font-weight: bold; display: none; }
-        .score-pass { background: #d4edda; color: #155724; }
-        .score-fail { background: #f8d7da; color: #721c24; }
+        
+        /* Result Styles */
+        .correct-bg { background: #d4edda !important; border-color: #28a745 !important; }
+        .wrong-bg { background: #f8d7da !important; border-color: #dc3545 !important; }
+        .feedback-note { margin-top: 10px; font-weight: bold; color: #721c24; display: none; padding: 10px; border-top: 1px dashed #dc3545; }
+        
+        #submit-btn { display: block; width: 100%; padding: 20px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 30px; }
+        #result-summary { margin-top: 30px; padding: 20px; border-radius: 10px; font-size: 24px; text-align: center; font-weight: bold; display: none; background: #fff; border: 2px solid #1a73e8; }
     </style>
 </head>
 <body>
@@ -27,11 +28,12 @@
 <div class="quiz-container">
     <h1>English Grammar Proficiency Test</h1>
     <div id="quiz-content"></div>
-    <button id="submit-btn" onclick="calculateScore()">Submit My Answers</button>
-    <div id="result-box"></div>
+    <button id="submit-btn" onclick="calculateScore()">Submit & Review Answers</button>
+    <div id="result-summary"></div>
 </div>
 
 <script>
+    // Full list of 50 questions (Answers 0=A, 1=B, 2=C, 3=D)
     const questions = [
         { q: "She ___ to the gym every morning.", options: ["go", "goes", "going", "gone"], correct: 1 },
         { q: "I haven't seen him ___ last year.", options: ["for", "until", "since", "before"], correct: 2 },
@@ -87,36 +89,45 @@
 
     const quizContent = document.getElementById('quiz-content');
     questions.forEach((item, index) => {
-        let html = `<div class="q-block">
+        let html = `<div class="q-block" id="block-${index}">
             <span class="q-text">${index + 1}. ${item.q}</span>
             <div class="options">`;
         item.options.forEach((opt, optIndex) => {
             html += `<label><input type="radio" name="q${index}" value="${optIndex}"> ${opt}</label>`;
         });
-        html += `</div></div>`;
+        html += `</div><div class="feedback-note" id="note-${index}">Correct answer: ${item.options[item.correct]}</div></div>`;
         quizContent.innerHTML += html;
     });
 
     function calculateScore() {
         let score = 0;
-        let unanswered = 0;
         questions.forEach((item, index) => {
+            const block = document.getElementById(`block-${index}`);
+            const note = document.getElementById(`note-${index}`);
             const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            
+            // Reset styles
+            block.classList.remove('correct-bg', 'wrong-bg');
+            note.style.display = "none";
+
             if (selected) {
-                if (parseInt(selected.value) === item.correct) score++;
+                if (parseInt(selected.value) === item.correct) {
+                    score++;
+                    block.classList.add('correct-bg');
+                } else {
+                    block.classList.add('wrong-bg');
+                    note.style.display = "block";
+                }
             } else {
-                unanswered++;
+                block.classList.add('wrong-bg');
+                note.innerText = "No answer selected. " + note.innerText;
+                note.style.display = "block";
             }
         });
 
-        if (unanswered > 0) {
-            if (!confirm(`You missed ${unanswered} questions. Do you want to submit anyway?`)) return;
-        }
-
-        const resBox = document.getElementById('result-box');
+        const resBox = document.getElementById('result-summary');
         resBox.style.display = "block";
-        resBox.className = score >= 35 ? "score-pass" : "score-fail";
-        resBox.innerHTML = `Your Final Score: ${score} / 50<br><small>${score >= 35 ? "Great job!" : "Keep practicing!"}</small>`;
+        resBox.innerHTML = `Your Final Score: ${score} / 50 <br> <span style="font-size: 16px;">Scroll down to see corrections in red.</span>`;
         window.scrollTo(0, 0);
     }
 </script>
