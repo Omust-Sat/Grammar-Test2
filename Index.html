@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive 50-Question Grammar Test</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; line-height: 1.6; }
+        .quiz-container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; }
+        .q-block { margin-bottom: 30px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; transition: 0.3s; }
+        .q-block:hover { border-color: #1a73e8; background: #f8fbff; }
+        .q-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; display: block; color: #333; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        label { background: #fff; padding: 12px; border-radius: 8px; cursor: pointer; border: 1px solid #ccc; display: flex; align-items: center; }
+        label:hover { background: #e8f0fe; }
+        input[type="radio"] { margin-right: 12px; transform: scale(1.2); }
+        #submit-btn { display: block; width: 100%; padding: 20px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        #submit-btn:hover { background: #1557b0; }
+        #result-box { margin-top: 30px; padding: 20px; border-radius: 10px; font-size: 24px; text-align: center; font-weight: bold; display: none; }
+        .score-pass { background: #d4edda; color: #155724; }
+        .score-fail { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>English Grammar Proficiency Test</h1>
+    <div id="quiz-content"></div>
+    <button id="submit-btn" onclick="calculateScore()">Submit My Answers</button>
+    <div id="result-box"></div>
+</div>
+
+<script>
+    const questions = [
+        { q: "She ___ to the gym every morning.", options: ["go", "goes", "going", "gone"], correct: 1 },
+        { q: "I haven't seen him ___ last year.", options: ["for", "until", "since", "before"], correct: 2 },
+        { q: "If it ___ tomorrow, we will stay home.", options: ["rain", "raining", "will rain", "rains"], correct: 3 },
+        { q: "Which of these is a countable noun?", options: ["Water", "Advice", "Apple", "Rice"], correct: 2 },
+        { q: "They ___ playing football when it started to rain.", options: ["were", "was", "are", "have"], correct: 0 },
+        { q: "By the time we arrived, the movie ___.", options: ["starts", "had started", "starting", "has started"], correct: 1 },
+        { q: "He is the person ___ car was stolen.", options: ["who", "which", "whose", "whom"], correct: 2 },
+        { q: "I am looking forward to ___ you.", options: ["see", "seeing", "seen", "saw"], correct: 1 },
+        { q: "She is much ___ than her sister.", options: ["tall", "taller", "tallest", "more tall"], correct: 1 },
+        { q: "We ___ to Paris three times so far.", options: ["were", "went", "have been", "had been"], correct: 2 },
+        { q: "Would you mind ___ the window?", options: ["open", "to open", "opening", "opened"], correct: 2 },
+        { q: "Neither Sarah ___ Jane likes coffee.", options: ["or", "nor", "and", "but"], correct: 1 },
+        { q: "The news ___ very depressing yesterday.", options: ["was", "were", "are", "been"], correct: 0 },
+        { q: "I wish I ___ more money last year.", options: ["have", "had", "had had", "would have"], correct: 2 },
+        { q: "She has been working here ___ five years.", options: ["since", "for", "ago", "during"], correct: 1 },
+        { q: "You ___ smoke in the hospital.", options: ["don't have to", "mustn't", "needn't", "might not"], correct: 1 },
+        { q: "That is the house ___ I was born.", options: ["which", "where", "what", "that"], correct: 1 },
+        { q: "If I ___ you, I would take the job.", options: ["was", "am", "were", "been"], correct: 2 },
+        { q: "He works ___ an engineer.", options: ["like", "as", "such as", "same"], correct: 1 },
+        { q: "The cake was eaten ___ the children.", options: ["with", "from", "by", "of"], correct: 2 },
+        { q: "I forgot ___ the door, so I went back.", options: ["locking", "to lock", "locked", "lock"], correct: 1 },
+        { q: "He is interested ___ learning Japanese.", options: ["on", "at", "in", "to"], correct: 2 },
+        { q: "We had ___ bread left, so we made sandwiches.", options: ["a little", "little", "a few", "few"], correct: 0 },
+        { q: "How ___ sugar do you need?", options: ["many", "much", "long", "often"], correct: 1 },
+        { q: "I didn't ___ to like vegetables when I was a kid.", options: ["used", "using", "use", "uses"], correct: 2 },
+        { q: "She ___ her homework yet.", options: ["didn't finish", "hasn't finished", "isn't finishing", "don't finish"], correct: 1 },
+        { q: "They arrived ___ the airport late.", options: ["at", "in", "to", "on"], correct: 0 },
+        { q: "This is the ___ book I have ever read.", options: ["better", "good", "best", "well"], correct: 2 },
+        { q: "I suggest ___ to the park.", options: ["go", "to go", "going", "gone"], correct: 2 },
+        { q: "Unless it ___ , we will go for a walk.", options: ["rains", "doesn't rain", "will rain", "raining"], correct: 0 },
+        { q: "She enjoys ___ books.", options: ["read", "to read", "reading", "reads"], correct: 2 },
+        { q: "The police ___ coming to investigate.", options: ["is", "are", "was", "has"], correct: 1 },
+        { q: "Can you tell me where ___?", options: ["is the bank", "the bank is", "bank is the", "does the bank"], correct: 1 },
+        { q: "It's time we ___ home.", options: ["go", "went", "going", "to go"], correct: 1 },
+        { q: "He denied ___ the money.", options: ["steal", "to steal", "stealing", "stole"], correct: 2 },
+        { q: "I ___ lunch when the phone rang.", options: ["had", "was having", "have", "am having"], correct: 1 },
+        { q: "She is good ___ playing the piano.", options: ["in", "at", "on", "with"], correct: 1 },
+        { q: "There isn't ___ milk in the fridge.", options: ["some", "any", "no", "many"], correct: 1 },
+        { q: "I'll call you as soon as I ___.", options: ["arrive", "will arrive", "arrived", "arriving"], correct: 0 },
+        { q: "He said that he ___ seen that movie before.", options: ["has", "had", "was", "did"], correct: 1 },
+        { q: "Who ___ this window yesterday?", options: ["break", "broke", "broken", "breaks"], correct: 1 },
+        { q: "You should avoid ___ too much salt.", options: ["eating", "to eat", "eat", "eaten"], correct: 0 },
+        { q: "That is ___ expensive car.", options: ["a", "an", "the", "no article"], correct: 1 },
+        { q: "I ___ a bath when the lights went out.", options: ["took", "was taking", "take", "have taken"], correct: 1 },
+        { q: "He doesn't like tea, and ___ do I.", options: ["so", "neither", "too", "either"], correct: 1 },
+        { q: "I am tired ___ waiting.", options: ["of", "for", "with", "at"], correct: 0 },
+        { q: "They ___ each other for ten years.", options: ["know", "are knowing", "have known", "knew"], correct: 2 },
+        { q: "Please turn ___ the lights before you leave.", options: ["off", "out", "on", "down"], correct: 0 },
+        { q: "Which is the ___ city in the world?", options: ["big", "bigger", "biggest", "most big"], correct: 2 },
+        { q: "He ___ me that he was tired.", options: ["said", "told", "spoke", "talked"], correct: 1 }
+    ];
+
+    const quizContent = document.getElementById('quiz-content');
+    questions.forEach((item, index) => {
+        let html = `<div class="q-block">
+            <span class="q-text">${index + 1}. ${item.q}</span>
+            <div class="options">`;
+        item.options.forEach((opt, optIndex) => {
+            html += `<label><input type="radio" name="q${index}" value="${optIndex}"> ${opt}</label>`;
+        });
+        html += `</div></div>`;
+        quizContent.innerHTML += html;
+    });
+
+    function calculateScore() {
+        let score = 0;
+        let unanswered = 0;
+        questions.forEach((item, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected) {
+                if (parseInt(selected.value) === item.correct) score++;
+            } else {
+                unanswered++;
+            }
+        });
+
+        if (unanswered > 0) {
+            if (!confirm(`You missed ${unanswered} questions. Do you want to submit anyway?`)) return;
+        }
+
+        const resBox = document.getElementById('result-box');
+        resBox.style.display = "block";
+        resBox.className = score >= 35 ? "score-pass" : "score-fail";
+        resBox.innerHTML = `Your Final Score: ${score} / 50<br><small>${score >= 35 ? "Great job!" : "Keep practicing!"}</small>`;
+        window.scrollTo(0, 0);
+    }
+</script>
+</body>
+</html>
